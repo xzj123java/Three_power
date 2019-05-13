@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="GB18030">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keys" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <div><a class="navbar-brand" href="index.html" style="font-size:32px;">千峰-创意产品众筹平台</a></div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <form class="form-signin" role="form">
+        <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户注册</h2>
+        <!--账号登录-->
+        <div class="form-group has-success has-feedback">
+            <input type="text" name="user_name" class="form-control" id="inputSuccess4" placeholder="请输入登录账号" autofocus>
+            <span  class="glyphicon glyphicon-user form-control-feedback"></span>
+            <span id="user_names"></span>
+        </div>
+        <!--账号密码-->
+        <div class="form-group has-success has-feedback">
+            <input type="text" name="user_pas" class="form-control" id="inputSuccess4" placeholder="请输入登录密码"
+                   style="margin-top:10px;">
+            <span id="user_pass" class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <!--邮箱-->
+        <div class="form-group has-success has-feedback">
+            <input type="text" name="user_email" class="form-control" id="inputSuccess4" placeholder="请输入邮箱地址"
+                   style="margin-top:10px;">
+            <span  class="glyphicon glyphicon glyphicon-envelope form-control-feedback"></span>
+            <span id="user_emails"></span>
+        </div>
+        <div class="form-group has-success has-feedback">
+            <select class="form-control">
+                <option>会员</option>
+                <option>管理</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label>
+                忘记密码
+            </label>
+            <label style="float:right">
+                <a href="login.html">我有账号</a>
+            </label>
+        </div>
+        <!--界面传值-->
+        <a class="btn btn-lg btn-success btn-block" onclick="reg()"> 注册</a>
+
+    </form>
+</div>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+
+        //判断用户名正则
+        $("[name='user_name']").change(
+            function () {
+            alert("11");
+                var user_name = $("input[name='user_name']").val();
+            $.ajax(
+                {
+                    url: "impower",//地址 先查询用户名是否存在？
+                    type: "POST",//提交方式
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify({"user_name": user_name}),
+                    success: function (result) {
+                        alert(result);
+                        if (result == "2") {
+                            $("#user_names").html("用户名格式正确").css("color", "green");
+                        } else {
+                            $("#user_names").html("用户名格式不正确").css("color", "red");
+                        }
+                    }
+                })
+        })
+
+        //判断用户名正则
+        $("[name='user_email']").change(
+            function () {
+                alert("22");
+                var user_email= $("input[name='user_email']").val();
+                $.ajax(
+                    {
+                        url: "doRegister",//地址 先查询用户名是否存在？
+                        type: "POST",//提交方式
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify({"user_email": user_email}),
+                        success: function (result) {
+                            alert(result);
+                            if (result == "2") {
+                                $("#user_emails").html("邮箱格式通过").css("color", "green");
+                            } else {
+                                $("#user_emails").html("邮箱格式不正确").css("color", "red");
+                            }
+                        }
+                    })
+            })
+
+    })
+
+    function reg() {
+        //JQuery取值
+        var user_name = $("input[name='user_name']").val();
+        var user_pas = $("input[name='user_pas']").val();
+        var user_email = $("input[name='user_email']").val();
+        alert(user_name + "/" + user_pas + "/" + user_email)
+        //ajax传值
+        $.ajax(
+            {
+                url: "doRegister",//地址 先查询用户名是否存在？
+                type: "POST",//提交方式
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({"user_name": user_name, "user_email": user_email}),
+                success: function (result) {
+                    alert(result);
+                    if (result == "1") {
+                        alert("正则不通过");
+                    } else {
+                        $.ajax(
+                            {
+                                url: "selectUsername_email",//地址 先查询用户名是否存在？
+                                type: "POST",//提交方式
+                                data: {"user_name": user_name, "user_pas": user_pas, "user_email": user_email},
+                                success: function (result) {
+                                    alert(result);
+                                    if (result == true) {
+                                        window.location.href = "login.html";
+                                    } else {
+                                        alert("用户名或邮箱已经存在");
+                                    }
+                                }
+                            })
+                    }
+                }
+            })
+        /*$.ajax(
+            {
+                url: "selectUsername_email",//地址 先查询用户名是否存在？
+                type: "POST",//提交方式
+                data: {"user_name": user_name,  "user_pas": user_pas, "user_email": user_email},
+                success: function (result) {
+                    alert(result);
+                    if (result == true) {
+                        window.location.href = "login.html";
+                    } else {
+                        alert("用户名或邮箱已经存在");
+                    }
+                }
+            })*/
+    }
+
+</script>
+</body>
+</html>

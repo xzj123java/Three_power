@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .class1 {
+            background: #444;
+            color: #eee;
+        }
+    </style>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+
+</head>
+<body>
+<div id="app">
+    <label for="r1">修改颜色</label><input type="checkbox" v-model="vaule" id="r1">
+    <br><br>
+    <div v-html="mydata"></div>
+    //加标签
+    <p>{{ show()}}</p>
+    <p v-bind:class="{'class1': vaule}">
+        改变颜色
+    </p>
+</div>
+
+
+<script>
+    new Vue({ //js中被大括号包裹的都是对象
+        el: '#app', //绑定
+        data: {//属性1 ：有那些数据
+            mydata: '<h1>你好</h1>',
+            vaule: false
+        },
+        methods: {//属相2：有哪些方法
+            show: function () {
+                return "你好世界"
+            }
+        }
+    })
+
+</script>
+
+</body>
+</html>

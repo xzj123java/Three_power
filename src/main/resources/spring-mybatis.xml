@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <!-- 1、配置加载数据源参数文件；  -->
+    <context:property-placeholder location="classpath:oracle.properties"></context:property-placeholder>
+
+    <!-- 2、配置数据源连接池  druid连接池 依赖 反射set-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${driver}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${user}"></property>
+        <property name="password" value="${pass}"></property>
+    </bean>
+    <!-- 3、配置sessionFactoryBean  配置会话工厂 -->
+    <!-- Spring容器最基本的接口就是BeanFactory. BeanFactory负责配置、创建、管理Bean，它有一个子接口ApplicationContext,-->
+    <!--这个sessionFactory 的作用 为mybatis的SqlSessionFactoryBean 会话被Spring托管提供支持-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--定义数据源 ref 注入String -->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--mapper映射路径 ioc配置mybatis-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+        <!--别名-->
+        <property name="typeAliasesPackage" value="com.xa.pojo"></property>
+    </bean>
+
+    <!-- 4、配置mybatis接口扫描器 DAO和会话工厂练习  basedao-->
+    <!--意义将sessionFactory作为DAO  Sqlsession的提供者-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--将这个包下面所有的包看作DAO  使用Sqlsession-->
+        <property name="basePackage" value="com.xa.*.Mapper"></property>
+        <!--创造Sqlsession-->
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+    </bean>
+
+    <!-- 5、配置事务管理器 管理数据源-->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!-- 6、xml配置事务扩散机制   -->
+    <!--上面配置的事务管理器transactionManager-->
+    <!--配置通知定义事务的级别属性-->
+   <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes >
+            &lt;!&ndash;以delete/insert/update/开头的方法会在事务运行时使用默认策略&ndash;&gt;
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        &lt;!&ndash;切点&ndash;&gt;
+        <aop:pointcut expression="execution(* com.xa.UserInfo.service.*.*.*(..))" id="serviceCutPoint"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceCutPoint"/>
+    </aop:config>-->
+    <!--注解配置-->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+</beans>

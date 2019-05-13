@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+</head>
+<body>
+<div id="click">
+    <button @click="number+=1">点我事件绑定</button>
+    <p>v-on可以被@代替{{number}}</p>
+</div>
+<div id="Objclick">
+    <button @click="Obj">点我调用方法 </button>
+    <button @click="innerHTML">点我调用innerHTML方法 </button>
+    <button @click="innerText">点我调用innerText方法 </button>
+    <button @click="sayTest('弹框传值成功')"> 传值展示</button>
+</div>
+<div id="tow">
+    <input type="checkbox" v-model="show"/>点我变魔术
+    <template v-if="show">
+        <p>套马的汉子你威武雄壮</p>
+        <p>打工是不可能打工的，这辈子都不可能打工的</p>
+        <p>--窃格瓦拉</p>
+    </template>
+</div>
+<div id="myif">
+    {{name}}的成绩是：
+    <div v-if="grade<60">
+        留级
+    </div>
+    <div v-else-if="grade>=60&&grade<=69">
+        马马虎虎
+    </div>
+    <div v-else-if="grade>=70&&grade<=79">
+        一般
+    </div>
+    <div v-else-if="grade>=80&&grade<=89">
+        良好
+    </div>
+    <div v-else-if="grade>=90&&grade<=99">
+        优秀
+    </div>
+    <div v-else-if="grade=100">
+        满分
+    </div>
+    <div v-else>
+        请输入正确成绩
+    </div>
+    {{grade}}分
+
+</div>
+<script>
+    var vale1 = new Vue({
+        el: '#myif',
+        data: {
+            name: '谢志剑',
+            grade: 60,
+        }
+    })
+    var vale2 = new Vue({
+        el: '#tow',
+        data: {
+            show: true
+        }
+    })
+    var vale13 = new Vue({
+        el: '#click',
+        data:{
+            number : 0
+        }
+    })
+
+    var vale14 = new Vue({
+        el: '#Objclick',
+        data:{
+            number : 0
+        },
+        methods :{
+            Obj: function (event) {
+                alert("调用方法成功")
+                alert("获得标签名："+event.srcElement.tagName)
+                alert("获得按钮名："+event.srcElement.innerHTML)
+                alert("区别会否转义："+event.srcElement.innerText)
+            },
+            innerHTML : function () {
+                document.getElementById("Objclick").innerHTML=
+                "<p>你好</p>" //没有追加效果
+            },
+            innerText : function () {
+                document.getElementById("Objclick").innerText= document.getElementById("Objclick").innerText +"<p>你好</p>"
+            },
+            sayTest: function (say) {
+              alert(say)
+            }
+        }
+            
+
+    })
+        
+</script>
+
+</body>
+</html>
+

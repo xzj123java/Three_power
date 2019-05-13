@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--映射文件-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xa.UserInfo.Mapper.UserInfoMapper"><!--映射 去除字段不匹配为空问题-->
+    <resultMap id="UserMapper" type="com.xa.pojo.UserInfo">
+        <!--主键-->
+        <id property="User_id" column="User_id"></id><!--列-->
+        <result property="User_name" column="User_name"></result>
+        <result property="User_pas" column="User_pas"></result>
+        <result property="user_email" column="user_email"></result>
+
+    </resultMap><!--查询id   参数的类型为INT  返回的结果为com.xa.pojo.User的对象-->
+    <select id="getAllUserInfo" resultType="com.xa.pojo.UserInfo">
+        SELECT * FROM UserInfo
+    </select>
+
+    <!--映射查询-->
+    <select id="getallMap" resultMap="UserMapper">
+        SELECT * FROM UserInfo
+    </select>
+    <!--动态查询-->
+    <select id="selectUserInfo" parameterType="com.xa.pojo.UserInfo" resultType="com.xa.pojo.UserInfo">
+        select * from UserInfo
+        <where>
+            <if test="user_id!=null and user_id!='' ">
+                or user_id= #{user_id,jdbcType=INTEGER}
+            </if>
+            <if test="user_name!=null and user_name!='' ">
+                or user_name=#{user_name,jdbcType=VARCHAR}
+            </if>
+            <if test="user_email!=null and user_email!=''">
+                or user_email=#{user_email,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+    <!--判断用户名/邮箱是否重复-->
+    <select id="selectUsername_email" parameterType="com.xa.pojo.UserInfo" resultType="com.xa.pojo.UserInfo">
+        select * from UserInfo
+        <where>
+            <if test="user_name!=null and user_name!='' ">
+                or user_name=#{user_name,jdbcType=VARCHAR}
+            </if>
+            <if test="user_email!=null and user_email!=''">
+                or user_email=#{user_email,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <!--用户验证登录动态查询-->
+    <select id="selectUserInfo1" parameterType="com.xa.pojo.UserInfo" resultType="com.xa.pojo.UserInfo">
+        select * from UserInfo where 1=1
+        <if test="user_name!=null and user_name!='' ">
+            and user_name=#{user_name,jdbcType=VARCHAR}
+        </if>
+        <if test="user_pas!=null and user_pas!='' ">
+            and user_pas=#{user_pas,jdbcType=VARCHAR}
+        </if>
+
+    </select>
+
+    <!-- 添加用户-->
+    <insert id="addUserInfo" parameterType="com.xa.pojo.UserInfo">
+    insert into UserInfo values( seq_pk_UserInfo.nextval,#{user_name,jdbcType=VARCHAR},#{user_pas,jdbcType=VARCHAR},#{user_email,jdbcType=VARCHAR})
+    </insert>
+
+    <!--删除用户-->
+    <delete id="deleteUserById" parameterType="int">
+     delete from UserInfo where  User_id= #{id}
+    </delete>
+    <!--根据ID查询一个用户在修改-->
+    <select id="selectid" parameterType="int" resultType="com.xa.pojo.UserInfo">
+        select * from userinfo where  User_id= #{id}
+    </select>
+    <!--修改用户-->
+    <update id="updateUserInfo" parameterType="com.xa.pojo.UserInfo">
+    update USERINFO set User_name=#{user_name},User_pas= #{user_pas},User_email=#{user_email} where  User_id= #{user_id}
+    </update>
+
+    <!--模糊查询-->
+    <select id="Likeuser" parameterType="String" resultType="com.xa.pojo.UserInfo">
+        SELECT * FROM UserInfo
+        <where>
+            <if test="like!=null and like!='' ">
+                or user_name LIKE '%${like}%'
+            </if>
+            <if test="like != null and like != ''">
+                or user_email LIKE '%${like}%'
+            </if>
+        </where>
+        /* ORDER BY id*/
+    </select>
+
+
+    <!-- =============================角色====================================== -->
+    <select id="selectroleall" parameterType="com.xa.pojo.Role">
+        select  * from role
+    </select>
+
+    <!--分页-->
+    <!--<select id="queryUsersBySql" resultType="com.xa.pojo.UserInfo"  parameterType="com.xa.pojo.PagaBean" >
+&#45;&#45;         ROWNUM RN 伪列
+        SELECT * FROM
+        (
+        SELECT A.*, ROWNUM RN
+        FROM (SELECT * FROM UserInfo) A
+        WHERE ROWNUM   &lt;= #{end}
+        )
+        WHERE RN &gt;= #{satre}
+    </select>-->
+</mapper>

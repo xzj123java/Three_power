@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+</head>
+<body>
+<div id="mydiv">
+    <input type="text" v-model="message">
+    <p>{{message}}</p>
+    <table>
+        <tr>
+            <td>
+                商品名称
+            </td>
+            <td>
+                商品价格
+            </td>
+            <td>
+                商品数量
+            </td>
+            <td>
+                商品总价
+            </td>
+            <td>
+               操作
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ProductName}}
+            </td>
+            <td>
+             {{Price}}
+            </td>
+            <td>
+                {{Number}}
+            </td>
+            <td>
+            {{Price*Number}}
+            </td>
+            <td>
+               <input type="button" value="-" v-on:click="subNum"/>
+                <input type="text" v-model="Number" size="2">
+                <input type="button" value="+"  v-on:click="addNum"/>
+
+            </td>
+        </tr>
+    </table>
+
+</div>
+<script>
+    new Vue({
+        el: '#mydiv',
+        data: {
+            message: "锄禾日当午",
+            ProductName:"华为",//商品名称
+            Price:10000,//商品价格
+            Number:1
+        },
+        methods:{
+            addNum:function () {
+
+                ++this.Number;
+            },
+            subNum:function () {
+                if (this.Number>=1){
+                    --this.Number;
+                } else{
+                    this.Number==0;
+                }
+
+            },
+        }
+
+    });
+</script>
+</body>
+</html>

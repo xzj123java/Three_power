@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--映射文件-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xa.menuInfo.Mapper.MenuMapper"><!--映射 去除字段不匹配为空问题-->
+
+    <resultMap id="menuInfoMap" type="com.xa.pojo.Menu">
+        <!--主键-->
+        <id property="menu_id" column="menu_id"></id><!--列-->
+        <result property="menu_name" column="menu_name"></result>
+        <result property="menu_ico" column="menu_ico"></result>
+        <result property="menu_url" column="menu_url"></result>
+        <result property="fatherid" column="fatherid"></result>
+        <collection property="children" ofType="com.xa.pojo.Menu" column="menu_id">
+            <id property="menu_id" column="cid"></id><!--列-->
+            <result property="menu_name" column="cname"></result>
+            <result property="menu_ico" column="cico"></result>
+            <result property="menu_url" column="curl"></result>
+            <result property="fatherid" column="cfid"></result>
+        </collection>
+    </resultMap>
+
+    <!--Dto-->
+    <resultMap id="menuInfoDtoMap" type="com.xa.menuInfo.dto.MenuDto">
+        <!--主键-->
+        <id property="id" column="menu_id"></id><!--列-->
+        <result property="name" column="menu_name"></result>
+        <result property="url" column="menu_url"></result>
+        <result property="icon" column="menu_ico"></result>
+        <collection property="children" ofType="com.xa.menuInfo.dto.MenuDto" column="menu_id">
+            <id property="id" column="cid"></id><!--列-->
+            <result property="name" column="cname"></result>
+            <result property="url" column="curl"></result>
+            <result property="icon" column="cicon"></result>
+            <result property="checked" column="checked"></result>
+        </collection>
+    </resultMap>
+    <!--Dto查询-->
+    <select id="selectmenuallDto" resultMap="menuInfoDtoMap" parameterType="int">
+    select tb1.*,decode(to_char(Role_id),null,'false','true') checked from  (select m1.*,m2.MENU_ID cid , m2.MENU_ICO cicon ,  m2.MENU_NAME cname,m2.menu_url curl ,m2.FATHERID cfid from menu m1,menu m2 where m1.menu_id=m2.FATHERID) tb1 LEFT JOIN ROLE_MENU rm on tb1.MENU_ID = rm.MENU_ID and ROLE_ID=#{id,jdbcType=INTEGER}
+    </select>
+    <!--查所有-->
+    <select id="selectmenuall" resultMap="menuInfoMap">
+    select m1.*,m2.MENU_ID cid , m2.MENU_ICO cicon ,  m2.MENU_NAME cname,m2.menu_url curl ,m2.FATHERID cfid from menu m1,menu m2 where m1.menu_id=m2.FATHERID
+    </select>
+    <!--增-->
+    <insert id="addmenu" parameterType="com.xa.pojo.Menu">
+        insert into menu values (SEQ_PK_MENU.nextval,#{menu_skip},#{menu_superior},#{menu_ico},#{menu_name})
+    </insert>
+    <!--删-->
+    <delete id="deletemenu" parameterType="int">
+        delete from menu where Menu_id=#{id}
+    </delete>
+    <!--删除中间表数据-->
+    <delete id="impowerRole_idDelete" parameterType="int">
+        delete from role_menu where Role_id=#{id,jdbcType=INTEGER}
+    </delete>
+    <!--mybates批量操作 -->
+    <insert id="batchSave" parameterType="com.xa.menuInfo.vo.ImpowerVo">
+        insert into role_menu (role_menu_id,role_id,menu_id)
+            select SEQ_PK_ROLE_MENU.nextval,cd.*from (
+            <foreach collection="menus" item="menu_id" separator="union all">
+                select #{role_id,jdbcType=INTEGER},#{menu_id,jdbcType=INTEGER} from dual
+            </foreach>
+            )cd
+    </insert>
+    <!--动态查询-->
+    <select id="selectif" parameterType="com.xa.pojo.Menu" resultType="com.xa.pojo.Menu">
+        select * from menu
+        <where>
+            <if test="Menu_id!=null and Menu_id!=''">
+                or Menu_id=#{id}
+            </if>
+            <if test="Menu_skip!=null and Menu_skip!=''">H
+                or Menu_skip=#{skip}
+            </if>
+            <if test="Menu_superior!=null and Menu_superior!=''">H
+                or Menu_superior=#{superior}
+            </if>
+            <if test="Menu_ioc!=null and Menu_ioc!=''">H
+                or Menu_ico=#{ico}
+            </if>
+            <if test="Menu_name!=null and Menu_name!=''">H
+                or Menu_name=#{name}
+            </if>
+        </where>
+    </select>
+    <!--单个查询然后修改-->
+    <select id="selectid" parameterType="com.xa.pojo.Menu" resultType="com.xa.pojo.Menu">
+        select * from Menu where Menu_id=#{id}
+    </select>
+    <update id="updatemenu" parameterType="com.xa.pojo.Menu">
+        update Menu set Menu_skip=#{skip},Menu_superior=#{superior},Menu_ico=#{ico},Menu_name=#{Menu_name} where  Menu_id= #{Menu_id}
+    </update>
+
+</mapper>

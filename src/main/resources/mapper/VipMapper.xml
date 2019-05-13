@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--映射文件-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xa.vipInfo.Mapper.VipInfoMapper">
+    <!--增加VIP用户-->
+    <insert id="addVip" parameterType="com.xa.pojo.Vip">
+    insert into VIP values( seq_pk_VIP.nextval,#{Vname,jdbcType=VARCHAR},#{Vidcard,jdbcType=INTEGER},#{Vphone,jdbcType=INTEGER},#{Vimg,jdbcType=VARCHAR})
+    </insert>
+</mapper>

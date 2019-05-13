@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+<body>
+
+<biv id="forTest">
+    <ol>
+        <li v-for="site in sites">
+            {{ site.name }}
+        </li>
+
+    </ol>
+
+</biv>
+
+
+<table id="shopcart" border="1px">
+    <tr>
+        <td>
+            商品名称
+        </td>
+        <td>
+            商品数量
+        </td>
+        <td>
+            商品单价
+        </td>
+        <td>
+            商品总价
+        </td>
+        <td>
+            操作
+        </td>
+    <tr v-for="product in products">
+        <td>{{product.productName}}</td>
+        <td>{{product.count}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.price*product.count}}</td>
+        <td>
+            <button v-bind:disabled="product.count<=0"  @click="product.count-=1">-</button><!--v-bind:disabled="count<=0"-->
+            {{product.count}}
+            <button @click="product.count+=1">+</button>
+           <!--   <button value="-" @click="subNum">-</button>
+              {{product.count}}
+              <button value="+" @click="addNum">+</button>-->
+        </td>
+    <tr>
+        <td colspan="5">
+            总价：￥{{totalPrice()}}
+            <button @click="clearAll">清空购物车</button>
+        </td>
+    </tr>
+    </tr>
+</table>
+
+
+<script>
+    var vale = new Vue({
+        el: "#forTest",
+        data: {
+            sites: [
+                {name: "一"},
+                {name: "二"},
+                {name: "三"}
+            ]
+        }
+    })
+    var vale = new Vue({
+        el: "#shopcart",
+        data: {
+            products: [
+                {productName: "华为meta x", count: 1, price: 17500},
+                {productName: "三星s10", count: 1, price: 1500},
+                {productName: "iphonexs", count: 1, price: 9800},
+                {productName: "小米9", count: 1, price: 2999}
+            ]
+
+        },
+        subNum: function () {
+            ++this.count;
+        },
+        subNum: function () {
+            if (this.count <= 0) {
+                this.count = 0
+            } else {
+                --this.count;
+            }
+
+        },
+        methods: {
+            totalPrice: function () {
+                var total = 0;
+                for (var i=0;i<this.products.length;i++) {
+                    total+=this.products[i]*this.products[i].price;
+                }
+                return total;
+            },
+            clearAll: function () {
+                this.products = new Array();
+            }
+        }
+
+    })
+
+</script>
+
+</body>
+</html>
+
+
+
+
+

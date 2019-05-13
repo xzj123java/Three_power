@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+    <script src="jquery/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+<div id="userTable">
+    <table>
+        <thead>
+        <tr>
+            <th>账号</th>
+            <th>用户密码</th>
+            <th>邮箱</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr v-for="user in users">
+            <td > {{user.user_name}}</td>
+            <td >{{user.user_pas}}</td>
+            <td >{{user.user_email}}</td>
+        </tr>
+       <!-- <tr>
+            <td colspan="5">{{users}}</td>
+        </tr>-->
+        </tbody>
+
+    </table>
+</div>
+</body>
+</html>
+<script>
+    new Vue({
+        el: '#userTable',
+        data: {
+            users: []
+        },
+        created: function () {
+            //为了在内部函数能使用外部函数的this对象，要给它赋值了一个名叫self的变量。
+            var self = this;
+            $.ajax({
+                url: '/selectUserInfo',
+                type: 'post',
+                dataType: 'json'
+            }).then(function (res) {
+
+                self.users=res
+                console.log(res);
+                //把从json获取的数据赋值给数组
+                //self.user = res;
+            }).fail(function () {
+                console.log('失败');
+            })
+        }
+    })
+
+
+</script>

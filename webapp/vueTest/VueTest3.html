@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue/Vue.js.v2.2.2.js"></script>
+</head>
+<body>
+<div id="mydiv">
+    <input type="text" v-model="message">//v-model上下影响  v-bind :value="message"上下不影响
+    <p>{{message | myReplace }}</p>
+
+</div>
+<script>
+    new Vue({
+        el: '#mydiv',
+        data: {
+            message: "锄禾日当午",
+        },
+        filters: {//过滤方法
+            myReplace: function (value) {
+                return value.replace("日", "*");
+            }
+        }
+
+    });
+</script>
+</body>
+</html>
